@@ -13,9 +13,9 @@ const getPosts = async () => {
     main.innerHTML += `
     <h3>${postId}</h3>
     <h3>${id}</h3>
-    <h2>${name}</h2>
-    <h4>${email}</h4>
-    <h4>${body}</h4>
+    <h1>${name}</h1>
+    <h2>${email}</h2>
+    <p>${body}</p>
 
     `;
   });
