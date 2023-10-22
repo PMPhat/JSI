@@ -4,7 +4,8 @@ function getPokemon(string) {
       return response.json();
     })
     .then((data) => {
-      document.querySelector("#pokemonName").innerHTML = `
+      document.querySelector(".searchBox").innerHTML = `
+      
       <div>
         <img src="${data.sprites.front_shiny_female}"
           alt="${data.name}" />
