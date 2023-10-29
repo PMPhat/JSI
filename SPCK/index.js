@@ -1,6 +1,43 @@
-const getApi = async () => {
-  const url =
-    "https://airbnb13.p.rapidapi.com/search-location?location=Chicago&checkin=2023-10-16&checkout=2023-10-27&adults=1&children=0&infants=0&pets=0&page=1&currency=USD";
+import { loadFormLogin, checkAccount } from "./control.js";
+const DAY = 3;
+const nowObject = () => {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const year = today.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+const afterObject = (day) => {
+  const now = new Date(nowObject());
+  const newDateObject = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + DAY
+  );
+  const newDay = String(newDateObject.getDate()).padStart(2, "0");
+  const newMonth = String(newDateObject.getMonth() + 1).padStart(2, "0");
+  const newYear = newDateObject.getFullYear();
+  return `${newYear}-${newMonth}-${newDay}`;
+};
+console.log(nowObject());
+console.log(afterObject());
+
+// const dayNow = () => {
+//   return new Date().getDate();
+// };
+// const dayAfter = () => {
+//   const now = new Date(nowObject());
+//   const newDateObject = new Date(
+//     now.getFullYear(),
+//     now.getMonth(),
+//     now.getDate() + DAY
+//   );
+//   const newDay = newDateObject.getDate();
+//   return newDay;
+// };
+
+export const getApi = async (city) => {
+  const url = `https://airbnb13.p.rapidapi.com/search-location?location=${city}&checkin=${nowObject()}&checkout=${afterObject()}&adults=1&children=0&infants=0&pets=0&page=1&currency=USD`;
   const options = {
     method: "GET",
     headers: {
@@ -17,6 +54,7 @@ const getApi = async () => {
     if (result) {
       const data = result.results;
       let html = `
+      <div class="content-list"> 
      `;
       for (let i = 0; i < data.length; i++) {
         let city = data[i].city;
@@ -48,11 +86,78 @@ const getApi = async () => {
         </div>
         `;
       }
+      html += `</div>`;
       console.log(html);
-      document.querySelector(".content-list").innerHTML = html;
+      document.querySelector("#content").innerHTML += html;
     }
   } catch (error) {
     console.error(error);
   }
 };
-// getApi();
+export const loadCarousel = () => {
+  const content = document.querySelector("#content");
+  content.innerHTML = `    <div
+        id="carouselExampleControls"
+        class="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-inner" id="phatCarousel">
+          <div class="carousel-item active h-100">
+            <img
+              src="https://a0.muscache.com/im/pictures/miso/Hosting-52539316/original/942e2903-4f17-4753-8f91-09dcc0617e64.jpeg?im_w=720"
+              class="d-block w-100 h-100"
+              alt="First Slide"
+            />
+          </div>
+          <div class="carousel-item h-100">
+            <img
+              src="https://a0.muscache.com/im/pictures/a1d94df4-0001-47ef-a45e-21db63919e79.jpg?im_w=720"
+              class="d-block w-100 h-100"
+              alt="Second Slide"
+            />
+          </div>
+          <div class="carousel-item h-100">
+            <img
+              src="https://a0.muscache.com/im/pictures/12015095/160e3020_original.jpg?im_w=720"
+              class="d-block w-100 h-100"
+              alt="Third Slide"
+            />
+          </div>
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+`;
+};
+const logo = document.querySelector(".logo").addEventListener("click", () => {
+  loadCarousel();
+  getApi("Paris");
+});
+
+loadCarousel();
+// getApi("Paris");
+
+checkAccount();
+
+const btnClickSearch = document.querySelector("#btnClickSearch");
+btnClickSearch.addEventListener("click", () => {
+  let value = document.querySelector(".btnSearch").value;
+  document.querySelector("#content").innerHTML = ``;
+  getApi(value);
+});
